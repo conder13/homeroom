@@ -1,6 +1,5 @@
 import { getConjugation } from 'spanish-verbs';
 
-
 const verbText = document.getElementById("verb");
 const conjugationForm = document.getElementById("answer");
 
