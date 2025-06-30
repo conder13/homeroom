@@ -1,0 +1,86 @@
+* {
+   padding: 0;
+   margin: 0;
+}
+
+head {
+   background-color: #97A7B3;
+}
+
+body {
+   background-color: #7E7F9A;
+
+   height: 100%;
+
+   color: #EB9486;
+}
+
+.banner {
+   display: flex;
+   background-color: #97A7B3;
+   flex-grow: 1;
+   height: 300px;
+   font-size: 40px;
+   text-align: center;
+   align-items: center;
+   box-shadow: 0 10px 7px -10px #7E7F9A;
+}
+
+#welcome {
+   margin: auto;
+   color: #FFFFFF;
+   text-shadow: 3px 3px 3px #252933;
+   font-size: 80px;
+}
+
+.module {
+   background-color: #252933;
+   border-radius: 1vw;
+   width: 15vw;
+   height: 30vh;
+   align-items: center;
+   text-align: center;
+   display: inline-block;
+   /*left: 10vw;*/
+   padding: 2vw;
+}
+
+.module-grid {
+   display: grid;
+   row-gap: 1vw;
+   column-gap: 1vh;
+   margin: 1vw;
+   grid-template-columns: auto auto auto auto auto;
+
+}
+
+#schedule {
+   grid-column-start: 1;
+   grid-column-end: 3;
+   grid-row-start: 1;
+   grid-row-end: 3;
+   width: 34.5vw;
+   height: 70vh;
+}
+
+#homework {
+   grid-row-start: 1;
+   grid-row-end: 3;
+   height: 70vh;
+}
+
+#notes {
+   grid-column-start: 1;
+   grid-column-end: 3;
+}
+
+#study {
+   grid-column-start: 4;
+   grid-column-end: 6;
+   width: 34.5vw;
+
+}
+
+h1 {
+   font-size: 40px;
+}
