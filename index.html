@@ -2,9 +2,11 @@
 
 <head>
    <link rel="stylesheet" type="text/css" href="style.css">
-   <script type="module" src="./main.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+   <script type="module" src="./study.js"></script>
+   <script type="module" src="./schedule.js"></script>
+   <script type="module" src="./todo.js"></script>
 </head>
-
 
 <div class="banner">
 
@@ -14,7 +16,28 @@
 <div class="module-grid">
 
    <div class="module" id="schedule">
-      <h1>Day 1 Schedule</h1>
+      <h1 id="day">Day 1 Schedule</h1>
+      <div class="block" id="block1">
+         <h3>Class 1</h2>
+      </div>
+      <div class="block" id="block2">
+         <h3>Class 2</h2>
+      </div>
+      <div class="block" id="block3">
+         <h3>Class 3</h2>
+      </div>
+      <div class="block" id="block4">
+         <h3>Lunch</h2>
+      </div>
+      <div class="block" id="block5">
+         <h3>Class 4</h2>
+      </div>
+      <div class="block" id="block6">
+         <h3>Class 5</h2>
+      </div>
+      <div class="block" id="block7">
+         <h3>Class 6</h2>
+      </div>
    </div>
    <div class="module" id="study">
       <h1>Spanish Verb Practice</h1>
@@ -31,10 +54,19 @@
    </div>
    <div class="module" id="homework">
       <h1>Homework</h1>
+      <form id="todo">
+         <input id="addTodo" type="text" maxlength="25">
+         <button type="submit">Add</button>
+      </form>
+      <br>
+      <ol id="todoList">
+
+      </ol>
    </div>
 
-   <div class="module">
-      <h2>Module</h2>
+   <div class="module" id="timer">
+      <h2>Study Timer</h2>
+      <h2 id="time"></h2>
    </div>
    <div class="module">
       <h2>Module</h2>

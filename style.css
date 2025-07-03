@@ -58,9 +58,10 @@ body {
    grid-column-start: 1;
    grid-column-end: 3;
    grid-row-start: 1;
-   grid-row-end: 3;
+   grid-row-end: 4;
    width: 34.5vw;
-   height: 70vh;
+   height: 109vh;
+   align-items: center;
 }
 
 #homework {
@@ -82,5 +83,46 @@ body {
 }
 
 h1 {
-   font-size: 40px;
+   font-size: 2.5vw;
+}
+
+.block {
+   margin-top: 3vh;
+   background-color: #97A7B3;
+   width: 34.5vw;
+   height: 11vh;
+   border-radius: 1.5vw;
+   text-align: center;
+   color: black;
+}
+
+.block h3 {
+   white-space: pre-wrap;
+}
+
+#addTodo {
+   height: 5vh;
+   margin-top: 1vh;
+}
+
+.todoItem {
+   padding: 1vw;
+   width: 15vw;
+   all: unset;
+   margin: 0.5vw;
+   color: white;
+   text-decoration: none;
+}
+
+ol {
+   align-items: center;
+   height: 70vh;
+}
+
+ol li {
+   margin-bottom: 0.5vw;
+}
+
+li :hover {
+   background-color: black;
 }
