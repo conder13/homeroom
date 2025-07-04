@@ -150,3 +150,11 @@ li :hover {
 label {
    color: white;
 }
+
+#cover {
+   width: 15vw;
+   height: 12vw;
+   display: flex;
+   border-radius: 8px;
+   background-color: orange;
+}

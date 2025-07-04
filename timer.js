@@ -36,6 +36,7 @@ startTime.addEventListener('click', function () {
    totalSeconds = (parseInt(hours.value) * 3600 + parseInt(minutes.value) * 60 + parseInt(seconds.value));
    console.log(totalSeconds);
    updatePreset();
+   clearInterval(timer);
    startTimer(totalSeconds);
 
 });
@@ -50,6 +51,7 @@ pauseTime.addEventListener('click', function () {
       clearInterval(timer);
       pauseTime.textContent = "Resume";
    } else {
+      clearInterval(timer);
       startTimer(currentSeconds);
       pauseTime.textContent = "Pause";
    }
