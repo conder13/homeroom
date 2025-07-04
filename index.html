@@ -6,6 +6,8 @@
    <script type="module" src="./study.js"></script>
    <script type="module" src="./schedule.js"></script>
    <script type="module" src="./todo.js"></script>
+   <script type="module" src="./timer.js"></script>
+
 </head>
 
 <div class="banner">
@@ -65,8 +67,21 @@
    </div>
 
    <div class="module" id="timer">
-      <h2>Study Timer</h2>
-      <h2 id="time"></h2>
+      <h1>Study Timer</h1>
+      <br>
+      <h2 id="timeRemaining">10:00</h2>
+      <br>
+      <button id="stopTimer" type="button">Stop</button>
+      <button id="pauseTimer" type="button">Pause</button>
+      <br>
+      <br>
+      <label for="hours">H:</label>
+      <input id="hours" type="text" maxlength="2" value="0">
+      <label for="minutes">M:</label>
+      <input id="minutes" type="text" maxlength="2" value="30">
+      <label for="seconds">S:</label>
+      <input id="seconds" type="text" maxlength="2" value="0">
+      <button id="startTimer" type="button">Start</button>
    </div>
    <div class="module">
       <h2>Module</h2>

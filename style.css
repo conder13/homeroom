@@ -126,3 +126,27 @@ ol li {
 li :hover {
    background-color: black;
 }
+
+#timeRemaining {
+   color: white;
+   font-size: 4vw;
+}
+
+#hours {
+   height: 2vh;
+   width: 2vw;
+}
+
+#minutes {
+   height: 2vh;
+   width: 2vw;
+}
+
+#seconds {
+   height: 2vh;
+   width: 2vw;
+}
+
+label {
+   color: white;
+}
