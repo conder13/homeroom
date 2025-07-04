@@ -29,6 +29,8 @@ function updateList() {
       console.log(i - 1);
       items[i].onclick = function () {
          this.parentElement.remove();
+         todoArray.splice(todoArray.indexOf(this.textContent), 1);
+         console.log(this.textContent);
          updateList();
       }
       totalItems++;
