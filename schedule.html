@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+
+<head>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+
+   <link rel="stylesheet" href="style.css" />
+   <script type="module" src="schedule.js" defer></script>
+   <link rel="icon" type="image/x-icon" href="hrlogo7.png">
+   <title>Schedule - Homeroom</title>
+</head>
+
+<body>
+   <div class="navbar">
+      <img src="hrlogo7.png" id="navlogo"></img>
+      <a id="navlink" href="index.html">
+         <h2 id="navlink">Home</h2>
+      </a>
+      <a id="navlink_clicked" href="schedule.html">
+         <h2 id="navlink_clicked">Schedule</h2>
+      </a>
+   </div>
+
+   <div class="banner">
+      <h1 id="welcome">Schedule</h1>
+   </div>
+
+   <div id="app">
+      <div id="classPanel">
+         <h2>Classes</h2>
+         <div id="classInput">
+            <input type="text" id="newClassName" minlength="1" maxlength="12" placeholder="Add class..." />
+            <button id="addClassBtn">+</button>
+         </div>
+         <div id="classListContainer">
+            <div id="classList"></div>
+         </div>
+      </div>
+      <button id="clearSchedule">Clear Schedule</button>
+      <div id="scheduleContainer"></div>
+   </div>
+
+</body>
+
+</html>
