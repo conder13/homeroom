@@ -11,10 +11,10 @@ var classes = [];
 
 if (localStorage.getItem('classes')) {
    console.log(localStorage.getItem('classes'));
-}
-classes = JSON.parse(localStorage.getItem('classes'));
+   classes = JSON.parse(localStorage.getItem('classes'));
 
-classSchedule = JSON.parse(localStorage.getItem('classSchedule'));
+}
+
 console.log(classSchedule);
 
 const scheduleContainer = document.getElementById("scheduleContainer");
@@ -128,21 +128,38 @@ function createClassLabel(name, isPlaced = false) {
    removeBtn.textContent = "✕";
    removeBtn.onclick = (e) => {
       e.stopPropagation();
-      classes.pop()
+
       if (isPlaced) {
          // Remove only this placed instance
+         const dayIndex = parseInt(el.parentElement.dataset.day) - 1;
+         const blockIndex = parseInt(el.parentElement.dataset.block) - 1;
+         classSchedule[dayIndex][blockIndex] = null;
+
          el.remove();
       } else {
          // Remove all placed copies and the class list item
          const placedItems = scheduleContainer.querySelectorAll(`[id^="placed-"]`);
          placedItems.forEach(item => {
             if (item.textContent.includes(name)) {
+               const dayIndex = parseInt(item.parentElement.dataset.day) - 1;
+               const blockIndex = parseInt(item.parentElement.dataset.block) - 1;
+               classSchedule[dayIndex][blockIndex] = null;
+
                item.remove();
             }
          });
+
+         // remove from classes array
+         classes = classes.filter(c => c !== name);
+
          el.remove();
       }
+
+      // Save updated data
+      localStorage.setItem('classSchedule', JSON.stringify(classSchedule));
+      localStorage.setItem('classes', JSON.stringify(classes));
    };
+
 
    el.appendChild(removeBtn);
 
@@ -160,5 +177,6 @@ function clearSchedule() {
    localStorage.setItem('classSchedule', JSON.stringify(classSchedule));
 
 }
+
 
 generateSchedule(6, 7);

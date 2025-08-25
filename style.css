@@ -9,11 +9,8 @@ head {
 
 body {
    background-color: #005F63;
-
    height: 100%;
-
    color: #FFFFFF;
-
    font-family: 'Segoe UI', sans-serif;
    min-height: 100vh;
 }
@@ -44,8 +41,8 @@ body {
    align-items: center;
    text-align: center;
    display: inline-block;
-   /*left: 10vw;*/
    padding: 2vw;
+   overflow: auto;
 }
 
 .module-grid {
@@ -54,7 +51,6 @@ body {
    column-gap: 1vh;
    margin: 1vw;
    grid-template-columns: auto auto auto auto auto;
-
 }
 
 #schedule {
@@ -65,7 +61,7 @@ body {
    width: 34.5vw;
    height: 109vh;
    align-items: center;
-
+   font-size: 2vw;
 }
 
 #homework {
@@ -83,7 +79,6 @@ body {
    grid-column-start: 4;
    grid-column-end: 6;
    width: 34.5vw;
-
 }
 
 h1 {
@@ -122,16 +117,8 @@ li :hover {
    font-size: 4vw;
 }
 
-#hours {
-   height: 2vh;
-   width: 2.25vw;
-}
-
-#minutes {
-   height: 2vh;
-   width: 2.25vw;
-}
-
+#hours,
+#minutes,
 #seconds {
    height: 2vh;
    width: 2.25vw;
@@ -158,12 +145,7 @@ label {
    margin-left: 15px;
 }
 
-#navlink {
-   margin: auto;
-   color: #005F63;
-   float: left;
-}
-
+#navlink,
 #navlink_clicked {
    margin: auto;
    color: #005F63;
@@ -180,24 +162,21 @@ label {
    margin-right: 10px;
 }
 
-/* width */
+/* Scrollbar */
 ::-webkit-scrollbar {
-   width: 10px;
+   width: 0px;
 }
 
-/* Track */
 ::-webkit-scrollbar-track {
    background: none;
 }
 
-/* Handle */
 ::-webkit-scrollbar-thumb {
-   background: #ffffff;
+   background: none;
 }
 
-/* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-   background: #ffffff;
+   background: none;
 }
 
 #app {
@@ -231,7 +210,6 @@ label {
    border: none;
    font-size: 14px;
 }
-
 
 #classList {
    display: flex;
@@ -323,4 +301,53 @@ button {
    border-radius: 5px;
    cursor: pointer;
    margin: 5px;
+}
+
+/* ------------------- RESPONSIVE TWEAKS ------------------- */
+@media (max-width: 1024px) {
+   .module-grid {
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+   }
+
+   #schedule,
+   #study {
+      width: 100%;
+      height: auto;
+   }
+
+   .module {
+      width: 100%;
+      height: auto;
+   }
+
+   h1 {
+      font-size: 4vw;
+   }
+}
+
+@media (max-width: 600px) {
+   .banner {
+      height: auto;
+      font-size: 24px;
+      padding: 20px;
+   }
+
+   #welcome {
+      font-size: 40px;
+   }
+
+   .navbar {
+      width: 100%;
+      position: static;
+      justify-content: center;
+   }
+
+   .module {
+      padding: 10px;
+      font-size: 14px;
+   }
+
+   h1 {
+      font-size: 5vw;
+   }
 }
