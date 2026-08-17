@@ -1,170 +1,629 @@
-* {
-   padding: 0;
-   margin: 0;
+/* =========================================================================
+   Homeroom -- design tokens
+   Same palette as before (teal / sky blue / navy / orange / coral), just
+   applied through a consistent scale instead of raw vw units, so things
+   don't blow up or shrink to nothing at odd screen widths.
+   ========================================================================= */
+
+:root {
+   --teal: #005F63;
+   --sky: #5BA6D0;
+   --navy: #22223B;
+   --orange: #FF5A36;
+   --coral: #EB9486;
+   --white: #FFFFFF;
+
+   --font-display: 'Baloo 2', 'Segoe UI', sans-serif;
+   --font-body: 'Baloo 2', 'Segoe UI', sans-serif;
+
+   --radius-lg: 20px;
+   --radius-md: 12px;
+   --radius-sm: 8px;
+
+   --shadow-card: 0 6px 0 rgba(0, 0, 0, 0.18);
+   --shadow-card-hover: 0 8px 0 rgba(0, 0, 0, 0.18);
+
+   --gap: clamp(12px, 1.6vw, 20px);
 }
 
-head {
-   background-color: #005F63;
+* {
+   box-sizing: border-box;
 }
 
 body {
-   background-color: #005F63;
-   height: 100%;
-   color: #FFFFFF;
-   font-family: 'Segoe UI', sans-serif;
+   margin: 0;
+   background-color: var(--teal);
+   color: var(--white);
+   font-family: var(--font-body);
    min-height: 100vh;
 }
 
-.banner {
-   display: flex;
-   background-color: #5BA6D0;
-   flex-grow: 1;
-   height: 300px;
-   font-size: 40px;
-   text-align: center;
-   align-items: center;
-   box-shadow: 0 10px 7px -10px #005F63;
+h1, h2, h3, h4 {
+   font-family: var(--font-display);
+   font-weight: 700;
+   margin: 0;
 }
 
-#welcome {
-   margin: auto;
-   color: #FFFFFF;
-   text-shadow: 3px 3px 3px #22223B;
-   font-size: 80px;
-}
-
-.module {
-   background-color: #22223B;
-   border-radius: 1vw;
-   width: 15vw;
-   height: 30vh;
-   align-items: center;
-   text-align: center;
-   display: inline-block;
-   padding: 2vw;
-   overflow: auto;
-}
-
-.module-grid {
-   display: grid;
-   row-gap: 1vw;
-   column-gap: 1vh;
-   margin: 1vw;
-   grid-template-columns: auto auto auto auto auto;
-}
-
-#schedule {
-   grid-column-start: 1;
-   grid-column-end: 3;
-   grid-row-start: 1;
-   grid-row-end: 4;
-   width: 34.5vw;
-   height: 109vh;
-   align-items: center;
-   font-size: 2vw;
-}
-
-#homework {
-   grid-row-start: 1;
-   grid-row-end: 3;
-   height: 70vh;
-}
-
-#notes {
-   grid-column-start: 1;
-   grid-column-end: 3;
-}
-
-#study {
-   grid-column-start: 4;
-   grid-column-end: 6;
-   width: 34.5vw;
-}
-
-h1 {
-   font-size: 2.5vw;
-}
-
-#addTodo {
-   height: 5vh;
-   margin-top: 1vh;
-}
-
-.todoItem {
-   padding: 1vw;
-   width: 15vw;
-   all: unset;
-   margin: 0.5vw;
-   color: white;
-   text-decoration: none;
-}
-
-ol {
-   align-items: center;
-   height: 70vh;
-}
-
-ol li {
-   margin-bottom: 0.5vw;
-}
-
-li :hover {
-   background-color: black;
-}
-
-#timeRemaining {
-   color: white;
-   font-size: 4vw;
-}
-
-#hours,
-#minutes,
-#seconds {
-   height: 2vh;
-   width: 2.25vw;
-}
-
-label {
-   color: white;
-}
-
-#cover {
-   width: 15vw;
-   height: 12vw;
-   display: flex;
-   border-radius: 8px;
-   background-color: orange;
-}
+/* =========================================================================
+   Navbar
+   ========================================================================= */
 
 .navbar {
    display: flex;
-   flex-direction: row;
-   width: 300px;
-   position: absolute;
-   margin-top: 15px;
-   margin-left: 15px;
-}
-
-#navlink,
-#navlink_clicked {
-   margin: auto;
-   color: #005F63;
-   float: left;
-}
-
-#navlink:hover {
-   transform: scale(1.1);
+   align-items: center;
+   gap: 20px;
+   width: 100%;
+   padding: 12px 24px;
+   background-color: var(--navy);
+   position: sticky;
+   top: 0;
+   z-index: 20;
+   box-shadow: 0 3px 0 rgba(0, 0, 0, 0.25);
 }
 
 #navlogo {
-   width: 3vw;
-   height: 3vw;
-   margin-right: 10px;
+   width: 42px;
+   height: 42px;
+   border-radius: 10px;
 }
 
-/* Scrollbar */
+.navbar a {
+   text-decoration: none;
+}
+
+.navbar h2 {
+   font-size: 1.05rem;
+   padding: 8px 16px;
+   border-radius: 999px;
+   color: var(--white);
+   transition: transform 0.15s ease, background-color 0.15s ease;
+}
+
+#navlink:hover h2,
+.navbar a:hover h2 {
+   background-color: rgba(255, 255, 255, 0.1);
+   transform: translateY(-1px);
+}
+
+#navlink_clicked h2 {
+   background-color: var(--orange);
+   color: var(--white);
+}
+
+/* =========================================================================
+   Banner -- compact, scales with content instead of a fixed 300px block
+   ========================================================================= */
+
+.banner {
+   background: linear-gradient(135deg, var(--sky), #4a94bc);
+   padding: clamp(18px, 4vw, 36px) 24px;
+   text-align: center;
+}
+
+#welcome {
+   color: var(--white);
+   text-shadow: 2px 3px 0 rgba(0, 0, 0, 0.2);
+   font-size: clamp(1.8rem, 4vw, 3rem);
+   letter-spacing: 0.5px;
+}
+
+/* =========================================================================
+   Dashboard module grid (index.html)
+   Auto-fits by content, so it naturally goes to 1 column on phones,
+   2-3 on tablets, and the full layout on desktop -- no separate
+   "mobile vs desktop" grid needed.
+   ========================================================================= */
+
+.module-grid {
+   display: grid;
+   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+   grid-auto-rows: min-content;
+   gap: var(--gap);
+   padding: var(--gap);
+   max-width: 1400px;
+   margin: 0 auto;
+}
+
+.module {
+   background-color: var(--navy);
+   border-radius: var(--radius-lg);
+   box-shadow: var(--shadow-card);
+   padding: 0;
+   text-align: center;
+   overflow: hidden;
+   transition: transform 0.15s ease, box-shadow 0.15s ease;
+   display: flex;
+   flex-direction: column;
+}
+
+.module:hover {
+   transform: translateY(-2px);
+   box-shadow: var(--shadow-card-hover);
+}
+
+.module-header {
+   display: flex;
+   align-items: center;
+   gap: 8px;
+   padding: 10px 14px;
+   background-color: rgba(255, 255, 255, 0.06);
+   border-bottom: 2px solid rgba(255, 255, 255, 0.08);
+}
+
+.drag-handle {
+   cursor: grab;
+   font-size: 1.1rem;
+   color: rgba(255, 255, 255, 0.5);
+   line-height: 1;
+   user-select: none;
+}
+
+.drag-handle:active {
+   cursor: grabbing;
+}
+
+.module-title {
+   flex: 1;
+   font-size: 1.15rem;
+   text-align: left;
+}
+
+.module-remove {
+   background: none;
+   box-shadow: none;
+   color: rgba(255, 255, 255, 0.5);
+   font-size: 0.85rem;
+   padding: 4px 6px;
+   border-radius: 999px;
+}
+
+.module-remove:hover {
+   background-color: rgba(235, 148, 134, 0.25);
+   color: var(--coral);
+   transform: none;
+}
+
+.module-body {
+   padding: 18px 20px;
+   overflow: auto;
+   flex: 1;
+}
+
+.module-body h1 {
+   font-size: 1.05rem;
+   margin-bottom: 8px;
+}
+
+/* SortableJS's placeholder while dragging a module */
+.module-drag-ghost {
+   opacity: 0.35;
+}
+
+/* =========================================================================
+   Dashboard controls -- the "+ Add Module" button and its picker panel
+   ========================================================================= */
+
+#dashboardControls {
+   max-width: 1400px;
+   margin: 0 auto;
+   padding: var(--gap) var(--gap) 0;
+   position: relative;
+}
+
+#addModulePanel {
+   display: none;
+   flex-direction: column;
+   gap: 4px;
+   position: absolute;
+   top: 100%;
+   left: var(--gap);
+   margin-top: 6px;
+   background-color: var(--navy);
+   border-radius: var(--radius-md);
+   box-shadow: var(--shadow-card);
+   padding: 8px;
+   z-index: 10;
+   min-width: 200px;
+}
+
+#addModulePanel.open {
+   display: flex;
+}
+
+.addModuleOption {
+   background: none;
+   box-shadow: none;
+   color: var(--white);
+   text-align: left;
+   padding: 8px 10px;
+   border-radius: var(--radius-sm);
+   font-weight: 600;
+}
+
+.addModuleOption:hover {
+   background-color: rgba(255, 255, 255, 0.08);
+   transform: none;
+}
+
+/* Bigger modules get more room on wide screens; everything collapses to
+   a single natural column below ~900px. */
+@media (min-width: 900px) {
+   .module-grid {
+      grid-template-columns: repeat(5, 1fr);
+      grid-auto-flow: dense;
+   }
+
+   .module[data-module-id="schedule"] {
+      grid-column: span 2;
+      grid-row: span 3;
+   }
+
+   .module[data-module-id="flashcards"] {
+      grid-column: span 2;
+   }
+
+   .module[data-module-id="todo"] {
+      grid-row: span 2;
+   }
+}
+
+/* Today's schedule module */
+.schedule-day-title {
+   font-size: 1.3rem;
+   margin-bottom: 10px;
+}
+
+.schedule-block-list .block {
+   background-color: var(--orange);
+   border-radius: var(--radius-sm);
+   padding: 10px 12px;
+   margin-bottom: 8px;
+   font-weight: 600;
+}
+
+.schedule-block-list .cName {
+   margin: 0;
+   font-size: 1rem;
+}
+
+.schedule-empty {
+   opacity: 0.7;
+   font-size: 0.9rem;
+}
+
+/* Flashcards module */
+.deckSelect {
+   width: 100%;
+   padding: 8px 10px;
+   border: none;
+   border-radius: var(--radius-sm);
+   font-family: var(--font-body);
+   font-weight: 600;
+   margin-bottom: 12px;
+}
+
+.flashcardPrompt {
+   font-size: 1.1rem;
+   min-height: 2.6em;
+}
+
+.flashcardForm {
+   display: flex;
+   gap: 8px;
+   justify-content: center;
+   margin-top: 10px;
+}
+
+.flashcardForm input {
+   flex: 1;
+   min-width: 0;
+   padding: 8px 10px;
+   border: none;
+   border-radius: var(--radius-sm);
+   font-family: var(--font-body);
+   font-size: 1rem;
+}
+
+.flashcardFeedback {
+   min-height: 1.5em;
+   margin-top: 10px;
+}
+
+.flashcardScore {
+   opacity: 0.8;
+   font-size: 1rem;
+}
+
+.manageToggle {
+   margin-top: 12px;
+   background-color: var(--teal);
+   font-size: 0.85rem;
+   padding: 6px 12px;
+}
+
+.managePanel {
+   display: none;
+   text-align: left;
+   margin-top: 12px;
+   padding-top: 12px;
+   border-top: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.managePanel.open {
+   display: block;
+}
+
+.customCardList {
+   list-style: none;
+   margin: 0 0 10px;
+   padding: 0;
+   max-height: 140px;
+   overflow-y: auto;
+}
+
+.customCardList li {
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+   gap: 8px;
+   padding: 6px 0;
+   font-size: 0.9rem;
+}
+
+.addCardForm {
+   display: flex;
+   gap: 6px;
+   flex-wrap: wrap;
+}
+
+.addCardForm input {
+   flex: 1;
+   min-width: 90px;
+   padding: 7px 9px;
+   border: none;
+   border-radius: var(--radius-sm);
+   font-family: var(--font-body);
+   font-size: 0.9rem;
+}
+
+/* Homework / todo module */
+.todoForm {
+   display: flex;
+   gap: 8px;
+}
+
+.todoForm input {
+   flex: 1;
+   min-width: 0;
+   padding: 8px 10px;
+   border: none;
+   border-radius: var(--radius-sm);
+   font-family: var(--font-body);
+}
+
+.todoList {
+   list-style: none;
+   margin: 12px 0 0;
+   padding: 0;
+   max-height: 240px;
+   overflow-y: auto;
+}
+
+.todoList li {
+   margin-bottom: 8px;
+}
+
+.todoItem {
+   all: unset;
+   display: block;
+   width: 100%;
+   padding: 10px 12px;
+   background-color: var(--coral);
+   color: var(--navy);
+   font-weight: 600;
+   border-radius: var(--radius-sm);
+   cursor: pointer;
+   text-align: left;
+   transition: background-color 0.15s ease;
+   box-sizing: border-box;
+}
+
+.todoItem:hover {
+   background-color: var(--orange);
+   color: var(--white);
+}
+
+/* Timer module */
+.timeRemaining {
+   font-size: clamp(2rem, 6vw, 2.8rem);
+   font-weight: 700;
+   margin: 8px 0;
+}
+
+.timerControls {
+   display: flex;
+   justify-content: center;
+   gap: 8px;
+   margin-bottom: 10px;
+}
+
+.timerInputs {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   gap: 10px;
+   flex-wrap: wrap;
+}
+
+.timerField {
+   display: flex;
+   align-items: center;
+   gap: 4px;
+}
+
+.timerField input {
+   width: 3em;
+   padding: 6px 4px;
+   text-align: center;
+   border: none;
+   border-radius: var(--radius-sm);
+   font-family: var(--font-body);
+}
+
+label {
+   color: var(--white);
+   font-size: 0.9rem;
+}
+
+/* Account module (compact) */
+.accountStatus {
+   font-size: 0.95rem;
+   margin-bottom: 10px;
+   opacity: 0.9;
+}
+
+.account-module button {
+   width: 100%;
+}
+
+/* Full-screen auth modal */
+.authModalOverlay {
+   position: fixed;
+   inset: 0;
+   background: rgba(0, 0, 0, 0.6);
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   z-index: 100;
+   padding: 20px;
+}
+
+.authModalCard {
+   background-color: var(--navy);
+   border-radius: var(--radius-lg);
+   box-shadow: var(--shadow-card);
+   padding: 32px 26px 26px;
+   width: 100%;
+   max-width: 360px;
+   display: flex;
+   flex-direction: column;
+   gap: 12px;
+   position: relative;
+}
+
+.authModalCard h2 {
+   font-size: 1.5rem;
+   margin-bottom: 6px;
+}
+
+.authModalCard form {
+   display: flex;
+   flex-direction: column;
+   gap: 10px;
+}
+
+.authModalClose {
+   position: absolute;
+   top: 12px;
+   right: 12px;
+   background: none;
+   box-shadow: none;
+   color: rgba(255, 255, 255, 0.6);
+   padding: 4px 8px;
+   font-size: 0.9rem;
+}
+
+.authModalClose:hover {
+   transform: none;
+   color: var(--white);
+}
+
+.authModalCard input {
+   padding: 10px 12px;
+   border: none;
+   border-radius: var(--radius-sm);
+   font-family: var(--font-body);
+   font-size: 1rem;
+}
+
+.authModalSwitch {
+   background: none;
+   box-shadow: none;
+   color: var(--sky);
+   font-size: 0.85rem;
+   text-decoration: underline;
+   padding: 4px 0;
+   align-self: flex-start;
+}
+
+.authModalSwitch:hover {
+   transform: none;
+   opacity: 0.85;
+}
+
+.authModalMessage {
+   font-size: 0.85rem;
+   min-height: 1.2em;
+   opacity: 0.9;
+}
+
+/* Music module */
+.music-module .cover {
+   width: 100%;
+   aspect-ratio: 5 / 4;
+   border-radius: var(--radius-md);
+   background-color: var(--orange);
+   margin-bottom: 10px;
+}
+
+.music-module .songName {
+   font-size: 1.2rem;
+   margin-bottom: 8px;
+}
+
+/* =========================================================================
+   Buttons -- shared cartoony pill style
+   ========================================================================= */
+
+button {
+   font-family: var(--font-body);
+   font-weight: 700;
+   padding: 8px 16px;
+   background-color: var(--orange);
+   color: var(--white);
+   border: none;
+   border-radius: 999px;
+   cursor: pointer;
+   box-shadow: 0 3px 0 rgba(0, 0, 0, 0.25);
+   transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+button:hover {
+   transform: translateY(-1px);
+}
+
+button:active {
+   transform: translateY(1px);
+   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.25);
+}
+
+.removeBtn {
+   background: none;
+   box-shadow: none;
+   color: var(--coral);
+   font-weight: 700;
+   font-size: 1rem;
+   padding: 0 0 0 6px;
+}
+
+.removeBtn:hover {
+   transform: none;
+   color: var(--orange);
+}
+
+/* Scrollbars stay invisible but functional */
 ::-webkit-scrollbar {
-   width: 0px;
+   width: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -172,30 +631,38 @@ label {
 }
 
 ::-webkit-scrollbar-thumb {
-   background: none;
+   background: rgba(255, 255, 255, 0.15);
+   border-radius: 999px;
 }
 
-::-webkit-scrollbar-thumb:hover {
-   background: none;
-}
+/* =========================================================================
+   Schedule builder page (schedule.html)
+   ========================================================================= */
 
 #app {
    display: flex;
    flex-direction: column;
-   gap: 20px;
-   padding: 20px;
+   gap: var(--gap);
+   padding: var(--gap);
+   max-width: 1400px;
+   margin: 0 auto;
 }
 
 #classPanel {
    display: flex;
    flex-direction: row;
-   gap: 12px;
    align-items: center;
-   padding: 20px;
-   background-color: #22223B;
-   border-radius: 10px;
+   gap: 14px;
+   padding: 18px 20px;
+   background-color: var(--navy);
+   border-radius: var(--radius-lg);
+   box-shadow: var(--shadow-card);
    flex-wrap: wrap;
-   margin: 0 20px;
+}
+
+#classPanel h2 {
+   font-size: 1.2rem;
+   white-space: nowrap;
 }
 
 #classInput {
@@ -204,150 +671,193 @@ label {
 }
 
 #classInput input {
-   flex: 1;
-   padding: 8px;
-   border-radius: 5px;
+   padding: 9px 12px;
+   border-radius: var(--radius-sm);
    border: none;
-   font-size: 14px;
+   font-family: var(--font-body);
+   font-size: 0.95rem;
+   width: 160px;
+}
+
+#classListContainer {
+   flex: 1 1 300px;
 }
 
 #classList {
    display: flex;
-   gap: 10px;
+   gap: 8px;
    flex-wrap: wrap;
-   max-width: 100%;
-}
-
-.classRow {
-   display: flex;
-   align-items: center;
 }
 
 .classLabel {
-   background-color: #FFFFFF;
-   color: #22223B;
+   background-color: var(--white);
+   color: var(--navy);
    padding: 8px 12px;
-   border-radius: 6px;
+   border-radius: var(--radius-sm);
    cursor: grab;
-   font-weight: bold;
-   margin: 4px;
+   font-weight: 700;
    display: inline-flex;
    align-items: center;
    gap: 8px;
+   box-shadow: 0 2px 0 rgba(0, 0, 0, 0.15);
+   touch-action: none;
 }
 
-.removeBtn {
-   background: none;
-   border: none;
-   color: #EB9486;
-   font-weight: bold;
-   font-size: 16px;
+#dragHint {
+   margin: 0 20px;
+   font-size: 0.9rem;
+   opacity: 0.75;
+}
+
+#scheduleHeader {
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+   margin: 0 20px;
+}
+
+#scheduleHeader h2 {
+   font-size: 1.3rem;
+}
+
+/* Upload panel */
+#uploadPanel {
+   display: flex;
+   align-items: center;
+   gap: 12px;
+   padding: 16px 20px;
+   background-color: var(--navy);
+   border-radius: var(--radius-lg);
+   box-shadow: var(--shadow-card);
+   flex-wrap: wrap;
+}
+
+#uploadLabel {
+   background-color: var(--orange);
+   color: var(--white);
+   font-weight: 700;
+   padding: 10px 18px;
+   border-radius: 999px;
    cursor: pointer;
+   box-shadow: 0 3px 0 rgba(0, 0, 0, 0.25);
+   transition: transform 0.1s ease;
+   white-space: nowrap;
 }
 
+#uploadLabel:hover {
+   transform: translateY(-1px);
+}
+
+#scheduleUpload {
+   position: absolute;
+   width: 1px;
+   height: 1px;
+   overflow: hidden;
+   opacity: 0;
+}
+
+#uploadStatus {
+   color: var(--white);
+   font-size: 0.9rem;
+   opacity: 0.9;
+}
+
+/* Destructive action -- visually distinct from the primary orange buttons */
 #clearSchedule {
-   font-size: 14px;
+   background-color: var(--coral);
 }
 
+/* The week grid -- all days visible in one row on desktop, wraps down
+   gracefully on tablet, stacks to one column on phones. */
 #scheduleContainer {
    display: grid;
-   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-   gap: 10px;
-   padding: 20px;
+   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+   gap: var(--gap);
+}
+
+@media (min-width: 700px) {
+   #scheduleContainer {
+      /* Force every day into a single row when there's room, instead of
+         wrapping into a lopsided 2/3-column layout. The column count
+         matches the number of ".day" cards rendered, which schedule.js
+         already sets from the parsed/saved schedule's own day count. */
+      grid-template-columns: repeat(var(--day-count, 6), 1fr);
+   }
 }
 
 .day {
-   background-color: #22223B;
-   border: 1px solid #ccc;
-   border-radius: 10px;
-   padding: 16px;
+   background-color: var(--navy);
+   border-radius: var(--radius-lg);
+   box-shadow: var(--shadow-card);
+   padding: 14px;
    display: flex;
    flex-direction: column;
-   align-items: stretch;
+   gap: 8px;
 }
 
 .day h3 {
    text-align: center;
-   margin-bottom: 12px;
-   color: #ffffff;
+   font-size: 1.05rem;
+   padding-bottom: 6px;
+   border-bottom: 2px solid rgba(255, 255, 255, 0.15);
 }
 
-.block {
-   min-height: 60px;
-   background-color: #FF5A36;
-   border: 2px solid #FF5A36;
-   border-radius: 6px;
-   padding: 6px;
-   margin-bottom: 8px;
-   color: #ffffff;
+#scheduleContainer .block {
+   min-height: 54px;
+   background-color: var(--orange);
+   border-radius: var(--radius-sm);
+   padding: 8px;
+   color: var(--white);
    display: flex;
    align-items: center;
    justify-content: center;
-   font-weight: 500;
+   font-weight: 600;
+   font-size: 0.85rem;
    text-align: center;
+   transition: background-color 0.15s ease;
 }
 
-.block.drag-over {
-   background-color: #EB9486;
-   border-color: #ffffff;
-   color: #fff;
+#scheduleContainer .block:empty {
+   background-color: rgba(255, 90, 54, 0.25);
+   border: 2px dashed rgba(255, 255, 255, 0.25);
 }
 
-button {
-   padding: 5px 6px;
-   background-color: #005F63;
-   color: #fff;
-   border: none;
-   border-radius: 5px;
-   cursor: pointer;
-   margin: 5px;
+#scheduleContainer .block.drag-over {
+   background-color: var(--coral);
 }
 
-/* ------------------- RESPONSIVE TWEAKS ------------------- */
-@media (max-width: 1024px) {
-   .module-grid {
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-   }
-
-   #schedule,
-   #study {
-      width: 100%;
-      height: auto;
-   }
-
-   .module {
-      width: 100%;
-      height: auto;
-   }
-
-   h1 {
-      font-size: 4vw;
-   }
+#scheduleContainer .classLabel {
+   width: 100%;
+   justify-content: space-between;
+   background-color: transparent;
+   color: var(--white);
+   box-shadow: none;
+   padding: 0;
+   cursor: grab;
 }
+
+/* =========================================================================
+   Small screens
+   ========================================================================= */
 
 @media (max-width: 600px) {
-   .banner {
-      height: auto;
-      font-size: 24px;
-      padding: 20px;
-   }
-
-   #welcome {
-      font-size: 40px;
-   }
-
    .navbar {
-      width: 100%;
-      position: static;
-      justify-content: center;
+      padding: 10px 14px;
+      gap: 12px;
    }
 
-   .module {
-      padding: 10px;
-      font-size: 14px;
+   .navbar h2 {
+      font-size: 0.9rem;
+      padding: 6px 10px;
    }
 
-   h1 {
-      font-size: 5vw;
+   #classPanel,
+   #uploadPanel {
+      flex-direction: column;
+      align-items: stretch;
+   }
+
+   #classInput input {
+      width: auto;
    }
 }

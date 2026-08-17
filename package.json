@@ -5,7 +5,7 @@
   "description": "homeroom app to keep track of school",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "parcel build index.html"
+    "build": "parcel build index.html schedule.html"
   },
   "keywords": [],
   "author": "",
@@ -24,7 +24,9 @@
   },
   "dependencies": {
     "node": "^22.17.0",
+    "sortablejs": "^1.15.2",
     "spanish-verbs": "^3.4.0",
-    "tesseract.js": "^6.0.1"
+    "tesseract.js": "^6.0.1",
+    "@supabase/supabase-js": "^2.45.4"
   }
 }
