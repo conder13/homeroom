@@ -190,6 +190,20 @@ persistSchedule();
 // DOM refs
 // ---------------------------------------------------------------------
 
+// The class list becomes a sticky shelf under the navbar on small
+// screens (see style.css) -- it needs to know the navbar's actual
+// rendered height (which changes with font-size/padding at the mobile
+// breakpoint) rather than a guessed constant, so it sits flush under it
+// instead of overlapping or leaving a gap.
+function setNavbarHeightVar() {
+   const navbar = document.querySelector(".navbar");
+   if (navbar) {
+      document.documentElement.style.setProperty("--navbar-h", `${navbar.offsetHeight}px`);
+   }
+}
+setNavbarHeightVar();
+window.addEventListener("resize", setNavbarHeightVar);
+
 const classList = document.getElementById("classList");
 const newClassName = document.getElementById("newClassName");
 const addClassBtn = document.getElementById("addClassBtn");
@@ -268,7 +282,24 @@ function createClassCard(cls, onRemove) {
       onRemove();
    });
 
-   top.append(colorInput, nameInput, removeBtn);
+   // On small screens each card starts collapsed to a compact chip
+   // (see .classMetaRow / .classCard--expanded in style.css) so the
+   // sticky class shelf stays short -- this reveals/hides the
+   // teacher/room fields. It's a no-op above the mobile breakpoint,
+   // where the toggle itself is hidden and the fields are always shown.
+   const editToggleBtn = document.createElement("button");
+   editToggleBtn.type = "button";
+   editToggleBtn.className = "classEditToggle";
+   editToggleBtn.textContent = "\u270E"; // pencil
+   editToggleBtn.title = "Show teacher/room";
+   editToggleBtn.setAttribute("aria-label", "Show teacher/room");
+   editToggleBtn.addEventListener("pointerdown", (e) => e.stopPropagation());
+   editToggleBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      card.classList.toggle("classCard--expanded");
+   });
+
+   top.append(colorInput, nameInput, editToggleBtn, removeBtn);
    card.appendChild(top);
 
    const metaRow = document.createElement("div");
@@ -375,6 +406,16 @@ new Sortable(classList, {
    sort: false,
    filter: ".removeBtn",
    preventOnFilter: true,
+   // touch-action on .classCard now allows panning (see style.css) so
+   // the sidebar can be swipe-scrolled on mobile -- these two options
+   // are what keep that from turning every swipe into an accidental
+   // drag: touch needs a brief press-and-hold before a drag starts, and
+   // any real movement during that hold cancels it in favor of the
+   // browser's native scroll. Desktop mouse dragging is untouched
+   // (delayOnTouchOnly means the delay only applies to touch input).
+   delay: 150,
+   delayOnTouchOnly: true,
+   touchStartThreshold: 5,
 });
 
 // ---------------------------------------------------------------------

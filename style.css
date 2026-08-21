@@ -712,7 +712,14 @@ button:active {
    flex-direction: column;
    gap: 6px;
    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.15);
-   touch-action: none;
+   /* NOT touch-action: none -- the sidebar scrolls horizontally on
+      mobile now, and "none" blocks the browser from ever panning when
+      a finger lands on a card (which is most of the row), making the
+      shelf look cut off with no way to reach the rest of it.
+      "manipulation" still allows panning; the Sortable delay below
+      (touch only) is what tells a scroll-swipe apart from a
+      press-and-hold drag. */
+   touch-action: manipulation;
    flex: 1 1 190px;
    max-width: 240px;
 }
@@ -790,7 +797,7 @@ button:active {
 }
 
 #dragHint {
-   margin: 0 20px;
+   margin: 0;
    font-size: 0.9rem;
    opacity: 0.75;
 }
@@ -799,7 +806,7 @@ button:active {
    display: flex;
    align-items: center;
    justify-content: space-between;
-   margin: 0 20px;
+   margin: 0;
 }
 
 #scheduleHeader h2 {
@@ -999,7 +1006,7 @@ button:active {
    border-radius: var(--radius-lg);
    box-shadow: var(--shadow-card);
    padding: 16px 20px;
-   margin: 0 20px;
+   margin: 0;
 }
 
 #blockTimesPanel h2 {
@@ -1223,6 +1230,28 @@ button:active {
 }
 
 /* =========================================================================
+   Class card "Details" toggle (teacher/room) -- only shown/used on
+   small screens, see below. Defined here (outside the media query) just
+   so it's inert rather than invisible-but-broken above 600px.
+   ========================================================================= */
+
+.classEditToggle {
+   display: none;
+   background: none;
+   box-shadow: none;
+   color: rgba(34, 34, 59, 0.55);
+   font-size: 0.85rem;
+   line-height: 1;
+   padding: 2px;
+   flex-shrink: 0;
+}
+
+.classEditToggle:hover {
+   transform: none;
+   color: var(--navy);
+}
+
+/* =========================================================================
    Small screens
    ========================================================================= */
 
@@ -1237,18 +1266,118 @@ button:active {
       padding: 6px 10px;
    }
 
-   #classPanel,
-   #uploadPanel {
+   #app {
+      gap: 10px;
+   }
+
+   /* Reorder so the part you actually drag between -- the class list
+      and the grid -- is what you reach first. Upload and block-times
+      are one-time setup, not part of the everyday drag workflow, so
+      they sink to the bottom instead of sitting in between and adding
+      scroll distance/clutter before you get to the grid. */
+   #classPanel { order: 1; }
+   #dragHint { order: 2; }
+   #scheduleHeader { order: 3; }
+   #scheduleContainer { order: 4; }
+   #blockTimesPanel { order: 5; }
+   #uploadPanel { order: 6; }
+
+   /* The class list becomes a sticky shelf pinned just under the
+      navbar, so it's still visible while you scroll down through the
+      grid below it -- that's what makes dragging a class onto a day
+      actually possible on a phone. */
+   #classPanel {
+      position: sticky;
+      top: var(--navbar-h, 62px);
+      z-index: 15;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 6px;
+      padding: 10px 12px;
+   }
+
+   #classPanel h2 {
+      font-size: 0.9rem;
+      padding-top: 0;
+   }
+
+   /* One scrollable row of compact chips instead of a multi-row wrap --
+      keeps the sticky shelf short so it doesn't eat the screen. Flex
+      items default to min-width: auto, which would let the row's full
+      content width push #classPanel (and the page) wider than the
+      screen instead of clipping/scrolling -- min-width: 0 overrides
+      that so the intended overflow-x: auto actually takes effect. */
+   #classPanel {
+      min-width: 0;
+   }
+
+   #classListContainer {
+      flex: none;
+      min-width: 0;
+   }
+
+   #classList {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      overflow-y: hidden;
+      min-width: 0;
+      padding-bottom: 4px;
+      -webkit-overflow-scrolling: touch;
+   }
+
+   .classCard {
+      flex: 0 0 auto;
+      width: 156px;
+      max-width: 156px;
+      padding: 6px 8px;
+      gap: 4px;
+   }
+
+   .classCard .classCardTop {
+      gap: 6px;
+   }
+
+   .classCard .classColorInput {
+      width: 18px;
+      height: 18px;
+   }
+
+   .classCard .classCardNameInput {
+      font-size: 0.85rem;
+   }
+
+   /* Teacher/room fields are hidden by default to keep each chip small
+      -- tap "Details" on a card to reveal them for editing. */
+   .classMetaRow {
+      display: none;
+   }
+
+   .classCard--expanded {
+      width: 220px;
+      max-width: 220px;
+   }
+
+   .classCard--expanded .classMetaRow {
+      display: flex;
+   }
+
+   .classEditToggle {
+      display: block;
+   }
+
+   #dragHint {
+      font-size: 0.8rem;
+   }
+
+   #uploadPanel,
+   #blockTimesPanel {
       flex-direction: column;
       align-items: stretch;
    }
 
    #classInput input {
       width: auto;
-   }
-
-   .classCard {
-      max-width: none;
+      flex: 1;
    }
 
    .exportPanel {
