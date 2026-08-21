@@ -25,14 +25,16 @@
 
 import { supabase } from "./supabaseClient.js";
 
-const SYNCED_KEYS = ["classes", "classSchedule", "todoArray", "customFlashcards", "moduleLayout"];
+const SYNCED_KEYS = ["username", "classes", "classSchedule", "todoArray", "customFlashcards", "moduleLayout", "blockTimes"];
 
 const COLUMN_MAP = {
+    username: "username",
     classes: "classes",
     classSchedule: "class_schedule",
     todoArray: "todo_array",
     customFlashcards: "custom_flashcards",
     moduleLayout: "module_layout",
+    blockTimes: "block_times",
 };
 
 let currentUserId = null;
@@ -58,7 +60,12 @@ async function pushToCloud() {
     const row = { user_id: currentUserId, updated_at: new Date().toISOString() };
     for (const key of SYNCED_KEYS) {
         const raw = localStorage.getItem(key);
-        row[COLUMN_MAP[key]] = raw ? JSON.parse(raw) : null;
+        if (key === "username") {
+            // Stored as a plain string (not JSON) by authModal.js / account.js.
+            row[COLUMN_MAP[key]] = raw ?? null;
+        } else {
+            row[COLUMN_MAP[key]] = raw ? JSON.parse(raw) : null;
+        }
     }
 
     const { error } = await supabase.from("user_data").upsert(row);
@@ -88,7 +95,11 @@ async function pullFromCloud(userId) {
     for (const key of SYNCED_KEYS) {
         const value = data[COLUMN_MAP[key]];
         if (value !== null && value !== undefined) {
-            originalSetItem(key, JSON.stringify(value));
+            if (key === "username") {
+                originalSetItem(key, value);
+            } else {
+                originalSetItem(key, JSON.stringify(value));
+            }
         }
     }
     suppressSync = false;

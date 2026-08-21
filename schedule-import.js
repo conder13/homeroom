@@ -39,7 +39,13 @@ if (typeof window !== "undefined" && window.pdfjsLib) {
 
 /**
  * @param {File} file
- * @returns {Promise<{classes: string[], classSchedule: (string|null)[][], dayCount: number, periodCount: number}>}
+ * @returns {Promise<{
+ *   classes: string[],
+ *   classSchedule: ({name: string, teacher: string, room: string}|null)[][],
+ *   blockTimes: string[],
+ *   dayCount: number,
+ *   periodCount: number
+ * }>}
  */
 export async function parseSchedulePdf(file) {
     if (!window.pdfjsLib) {
@@ -70,18 +76,18 @@ export async function parseSchedulePdf(file) {
         const looksLikeGrid = items.some((it) => /^D\d+$/.test(it.str.trim()));
         if (!looksLikeGrid) continue;
 
-        const { classSchedule, dayCount, periodCount } = parseGridItems(items);
+        const { classSchedule, blockTimes, dayCount, periodCount } = parseGridItems(items);
 
         // Derive the unique class list (in first-seen order) for the sidebar
         // "classes" array that schedule.js already expects.
         const classes = [];
         for (const day of classSchedule) {
-            for (const name of day) {
-                if (name && !classes.includes(name)) classes.push(name);
+            for (const cell of day) {
+                if (cell && cell.name && !classes.includes(cell.name)) classes.push(cell.name);
             }
         }
 
-        return { classes, classSchedule, dayCount, periodCount };
+        return { classes, classSchedule, blockTimes, dayCount, periodCount };
     }
 
     throw new Error(
@@ -95,7 +101,8 @@ export async function parseSchedulePdf(file) {
  * today.js already read from, so no other code needs to change.
  * Call this only AFTER the student has reviewed/corrected the parse.
  */
-export function saveParsedSchedule({ classes, classSchedule }) {
+export function saveParsedSchedule({ classes, classSchedule, blockTimes }) {
     localStorage.setItem("classes", JSON.stringify(classes));
     localStorage.setItem("classSchedule", JSON.stringify(classSchedule));
+    if (blockTimes) localStorage.setItem("blockTimes", JSON.stringify(blockTimes));
 }

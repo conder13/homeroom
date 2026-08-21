@@ -71,12 +71,25 @@ export function mount(container) {
       blocks.forEach((cls) => {
          if (!cls) return;
          any = true;
+         // Older saved schedules stored a plain class-name string per slot;
+         // newer ones (from the PDF importer or manual entry) store
+         // { name, teacher, room }. Support both.
+         const cell = typeof cls === "string" ? { name: cls, teacher: "", room: "" } : cls;
+
          const block = document.createElement("div");
          block.className = "block";
          const name = document.createElement("h4");
          name.className = "cName";
-         name.textContent = cls;
+         name.textContent = cell.name;
          block.appendChild(name);
+
+         if (cell.room) {
+            const room = document.createElement("span");
+            room.className = "cRoom";
+            room.textContent = `Rm ${cell.room}`;
+            block.appendChild(room);
+         }
+
          list.appendChild(block);
       });
 

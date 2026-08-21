@@ -61,10 +61,12 @@ export function openAuthModal() {
             title.textContent = "Log In";
             primaryBtn.textContent = "Log In";
             switchModeBtn.textContent = "Need an account? Sign up";
+            nameInput.style.display = "none";       // add
         } else {
             title.textContent = "Sign Up";
             primaryBtn.textContent = "Sign Up";
             switchModeBtn.textContent = "Already have an account? Log in";
+            nameInput.style.display = "";            // add
         }
         message.textContent = "";
     }
@@ -80,10 +82,13 @@ export function openAuthModal() {
         message.textContent = "";
 
         const email = emailInput.value.trim();
-        const name = nameInput.value;
-
         const password = passInput.value;
 
+        if (mode === "signup") {
+            const name = nameInput.value.trim();
+            if (name) localStorage.setItem("username", name);
+        }
+        
         const { error } =
             mode === "login"
                 ? await supabase.auth.signInWithPassword({ email, password })
@@ -109,7 +114,7 @@ export function openAuthModal() {
         e.preventDefault();
         primaryBtn.click();
     });
-    form.append(emailInput, passInput, primaryBtn);
+    form.append(emailInput, nameInput, passInput, primaryBtn);
 
     card.append(closeBtn, title, form, switchModeBtn, message);
     overlay.appendChild(card);

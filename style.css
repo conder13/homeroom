@@ -286,6 +286,14 @@ h1, h2, h3, h4 {
    font-size: 1rem;
 }
 
+.schedule-block-list .cRoom {
+   display: block;
+   margin-top: 2px;
+   font-size: 0.75rem;
+   font-weight: 600;
+   opacity: 0.85;
+}
+
 .schedule-empty {
    opacity: 0.7;
    font-size: 0.9rem;
@@ -651,7 +659,7 @@ button:active {
 #classPanel {
    display: flex;
    flex-direction: row;
-   align-items: center;
+   align-items: flex-start;
    gap: 14px;
    padding: 18px 20px;
    background-color: var(--navy);
@@ -663,6 +671,7 @@ button:active {
 #classPanel h2 {
    font-size: 1.2rem;
    white-space: nowrap;
+   padding-top: 8px;
 }
 
 #classInput {
@@ -683,10 +692,87 @@ button:active {
    flex: 1 1 300px;
 }
 
+/* Each class is a small card -- name, color, teacher, and room all
+   edited in one place, so every day that class is scheduled on (and
+   the exported view) stays in sync automatically. */
 #classList {
    display: flex;
-   gap: 8px;
+   gap: 10px;
    flex-wrap: wrap;
+   align-items: flex-start;
+}
+
+.classCard {
+   background-color: var(--white);
+   color: var(--navy);
+   padding: 10px 12px;
+   border-radius: var(--radius-sm);
+   cursor: grab;
+   display: flex;
+   flex-direction: column;
+   gap: 6px;
+   box-shadow: 0 2px 0 rgba(0, 0, 0, 0.15);
+   touch-action: none;
+   flex: 1 1 190px;
+   max-width: 240px;
+}
+
+.classCardTop {
+   display: flex;
+   align-items: center;
+   gap: 8px;
+}
+
+.classCardNameInput {
+   flex: 1;
+   min-width: 0;
+   font-family: var(--font-body);
+   font-weight: 700;
+   font-size: 1rem;
+   color: var(--navy);
+   background: transparent;
+   border: none;
+   border-bottom: 1px solid transparent;
+   padding: 1px 0;
+}
+
+.classCardNameInput:hover,
+.classCardNameInput:focus {
+   border-bottom-color: rgba(34, 34, 59, 0.3);
+}
+
+.classCardNameInput:focus {
+   outline: none;
+}
+
+/* input[type=color], styled down to a plain round swatch button */
+.classColorInput {
+   -webkit-appearance: none;
+   appearance: none;
+   width: 22px;
+   height: 22px;
+   flex-shrink: 0;
+   padding: 0;
+   border: none;
+   border-radius: 50%;
+   background: none;
+   cursor: pointer;
+   box-shadow: 0 0 0 2px rgba(34, 34, 59, 0.15);
+}
+
+.classColorInput::-webkit-color-swatch-wrapper {
+   padding: 0;
+   border-radius: 50%;
+}
+
+.classColorInput::-webkit-color-swatch {
+   border: none;
+   border-radius: 50%;
+}
+
+.classColorInput::-moz-color-swatch {
+   border: none;
+   border-radius: 50%;
 }
 
 .classLabel {
@@ -830,10 +916,310 @@ button:active {
    width: 100%;
    justify-content: space-between;
    background-color: transparent;
-   color: var(--white);
+   /* Inherits from .block, which JS sets per-class-color so text stays
+      readable whatever color the class was given. */
+   color: inherit;
    box-shadow: none;
    padding: 0;
    cursor: grab;
+}
+
+/* =========================================================================
+   Placed chips (schedule builder grid only) -- read-only display of a
+   class's name, color, teacher, and room; those are edited from the
+   class card in the sidebar, not here.
+   ========================================================================= */
+
+.classLabel--placed {
+   flex-direction: column;
+   align-items: stretch;
+   gap: 4px;
+   cursor: default;
+}
+
+.classLabelTop {
+   display: flex;
+   align-items: center;
+   gap: 6px;
+}
+
+.classLabelName {
+   flex: 1;
+   min-width: 0;
+   overflow: hidden;
+   text-overflow: ellipsis;
+   white-space: nowrap;
+}
+
+.classLabel--placed .classLabelName {
+   font-weight: 700;
+}
+
+.classColorDot {
+   width: 10px;
+   height: 10px;
+   border-radius: 50%;
+   flex-shrink: 0;
+   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15);
+}
+
+.classLabelMeta {
+   font-size: 0.72rem;
+   font-weight: 600;
+   opacity: 0.85;
+}
+
+.classMetaRow {
+   display: flex;
+   gap: 6px;
+}
+
+.classMetaInput {
+   flex: 1;
+   min-width: 0;
+   padding: 5px 7px;
+   border: none;
+   border-radius: var(--radius-sm);
+   font-family: var(--font-body);
+   font-size: 0.75rem;
+   font-weight: 600;
+   color: var(--navy);
+}
+
+.classMetaInput::placeholder {
+   color: rgba(34, 34, 59, 0.5);
+}
+
+/* =========================================================================
+   Block times panel (schedule builder page)
+   ========================================================================= */
+
+#blockTimesPanel {
+   background-color: var(--navy);
+   border-radius: var(--radius-lg);
+   box-shadow: var(--shadow-card);
+   padding: 16px 20px;
+   margin: 0 20px;
+}
+
+#blockTimesPanel h2 {
+   font-size: 1.1rem;
+   margin-bottom: 4px;
+}
+
+.blockTimesHint {
+   font-size: 0.85rem;
+   opacity: 0.75;
+   margin: 0 0 12px;
+}
+
+.blockTimesRow {
+   display: grid;
+   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+   gap: 10px;
+}
+
+.blockTimeField label {
+   display: block;
+   font-size: 0.8rem;
+   margin-bottom: 4px;
+   opacity: 0.85;
+}
+
+.blockTimeField input {
+   width: 100%;
+   padding: 8px 10px;
+   border: none;
+   border-radius: var(--radius-sm);
+   font-family: var(--font-body);
+   font-size: 0.85rem;
+}
+
+/* Export trigger button, injected next to Clear Schedule */
+#exportScheduleBtn {
+   background-color: var(--sky);
+}
+
+/* =========================================================================
+   Schedule export overlay -- the printable/shareable weekly view
+   ========================================================================= */
+
+.exportOverlay {
+   position: fixed;
+   inset: 0;
+   background: rgba(0, 0, 0, 0.65);
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   z-index: 100;
+   padding: 20px;
+}
+
+.exportPanel {
+   background-color: var(--navy);
+   border-radius: var(--radius-lg);
+   box-shadow: var(--shadow-card);
+   padding: 26px;
+   width: 100%;
+   max-width: 900px;
+   max-height: 90vh;
+   display: flex;
+   flex-direction: column;
+   gap: 16px;
+   position: relative;
+   overflow: hidden;
+}
+
+.exportClose {
+   position: absolute;
+   top: 14px;
+   right: 14px;
+   background: none;
+   box-shadow: none;
+   color: rgba(255, 255, 255, 0.6);
+   padding: 4px 8px;
+   font-size: 0.9rem;
+   z-index: 1;
+}
+
+.exportClose:hover {
+   transform: none;
+   color: var(--white);
+}
+
+.exportPreviewWrap {
+   overflow: auto;
+   border-radius: var(--radius-md);
+   padding: 4px;
+}
+
+/* The card itself -- this is exactly what gets snapshotted to PNG/PDF,
+   so its own background must be opaque (not transparent/inherited).
+   White + navy text reads far cleaner as a phone screenshot than
+   navy-on-navy did. */
+.exportCard {
+   background-color: var(--white);
+   color: var(--navy);
+   border-radius: var(--radius-md);
+   padding: 28px 24px;
+   min-width: 640px;
+}
+
+.exportTitle {
+   text-align: center;
+   font-size: 1.6rem;
+   margin-bottom: 18px;
+   color: var(--navy);
+}
+
+/* A flat CSS Grid standing in for a table -- see the comment in
+   buildExportCard() for why. grid-template-columns is set inline per
+   render (it depends on how many days are in the schedule). */
+.exportGrid {
+   display: grid;
+}
+
+/* Grid items default to a min-width based on their content (e.g. a long
+   unbreakable word like "Homeroom/Advisory"), which can make one column
+   wider than the rest even though every track is an equal 1fr. Setting
+   min-width: 0 lets each cell actually shrink to its column's share. */
+.exportHeaderCell,
+.exportTimeCol,
+.exportCell {
+   min-width: 0;
+}
+
+.exportHeaderCell {
+   background-color: var(--navy);
+   color: var(--white);
+   font-family: var(--font-display);
+   font-size: 0.85rem;
+   text-align: center;
+   padding: 10px 6px;
+   border: 1px solid rgba(34, 34, 59, 0.12);
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+
+.exportTimeCol {
+   background-color: rgba(34, 34, 59, 0.04);
+   font-size: 0.7rem;
+   font-weight: 700;
+   color: var(--navy);
+   text-align: center;
+   opacity: 0.8;
+   padding: 10px 6px;
+   border: 1px solid rgba(34, 34, 59, 0.12);
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+
+.exportCell {
+   padding: 10px 8px;
+   border: 1px solid rgba(34, 34, 59, 0.12);
+   border-left: 4px solid transparent;
+   overflow-wrap: break-word;
+}
+
+.exportEmptyCell {
+   background-color: rgba(34, 34, 59, 0.02);
+}
+
+.exportClassName {
+   display: flex;
+   align-items: center;
+   gap: 5px;
+   font-weight: 700;
+   font-size: 0.85rem;
+   color: var(--navy);
+   line-height: 1.25;
+}
+
+.exportClassNameText {
+   flex: 1;
+   min-width: 0;
+   overflow-wrap: break-word;
+   word-break: break-word;
+}
+
+.exportColorDot {
+   width: 8px;
+   height: 8px;
+   border-radius: 50%;
+   flex-shrink: 0;
+   box-shadow: 0 0 0 1px rgba(34, 34, 59, 0.15);
+}
+
+.exportMeta {
+   font-size: 0.7rem;
+   font-weight: 600;
+   color: rgba(34, 34, 59, 0.65);
+   margin-top: 3px;
+   line-height: 1.2;
+}
+
+.exportEmptyDay {
+   text-align: center;
+   font-size: 0.9rem;
+   opacity: 0.7;
+   color: var(--navy);
+}
+
+.exportActions {
+   display: flex;
+   gap: 10px;
+   justify-content: center;
+   flex-wrap: wrap;
+}
+
+.exportStatus {
+   text-align: center;
+   font-size: 0.85rem;
+   opacity: 0.85;
+   min-height: 1.2em;
+   margin: 0;
 }
 
 /* =========================================================================
@@ -859,5 +1245,17 @@ button:active {
 
    #classInput input {
       width: auto;
+   }
+
+   .classCard {
+      max-width: none;
+   }
+
+   .exportPanel {
+      padding: 18px 14px;
+   }
+
+   .blockTimesRow {
+      grid-template-columns: 1fr 1fr;
    }
 }

@@ -61,16 +61,21 @@ function parseGridItems(items) {
     const dayCount = dayHeaders.length;
     const dayX0 = dayHeaders.map((h) => h.x - HEADER_TO_CONTENT_X_OFFSET);
 
-    // 2. Band (period) boundaries: rows matching the time-range pattern
-    const timeTops = clean
+    // 2. Band (period) boundaries: rows matching the time-range pattern.
+    // Keep the row's own text too (e.g. "9:15 AM - 10:05 AM") -- these
+    // repeat once per day column at the same top, so dedupe by top but
+    // keep the first text seen for each band.
+    const timeItemsSorted = clean
         .filter((it) => TIME_ROW_RE.test(it.str))
-        .map((it) => Math.round(it.top * 10) / 10)
-        .sort((a, b) => a - b);
+        .sort((a, b) => a.top - b.top);
 
     const bandBoundaries = [];
-    for (const t of timeTops) {
+    const blockTimes = [];
+    for (const it of timeItemsSorted) {
+        const t = Math.round(it.top * 10) / 10;
         if (bandBoundaries.length === 0 || t - bandBoundaries[bandBoundaries.length - 1] > 2) {
             bandBoundaries.push(t);
+            blockTimes.push(it.str.trim());
         }
     }
     if (bandBoundaries.length === 0) {
@@ -119,8 +124,9 @@ function parseGridItems(items) {
         cellLines.get(key).push({ top: it.top, text: it.str });
     }
 
-    // 4. For each cell, keep lines up to (not including) the course-code
-    //    line -- everything before that is the course name.
+    // 4. For each cell: lines before the course-code line are the course
+    //    name; the code line itself carries the room ("...Rm : 224"); any
+    //    line(s) after it are the teacher's name.
     const classSchedule = Array.from({ length: dayCount }, () => Array(periodCount).fill(null));
 
     for (const [key, lines] of cellLines.entries()) {
@@ -130,16 +136,36 @@ function parseGridItems(items) {
         lines.sort((a, b) => a.top - b.top);
 
         const nameParts = [];
+        const teacherParts = [];
+        let room = "";
+        let seenCode = false;
+
         for (const line of lines) {
             const firstToken = line.text.split(" ")[0];
-            if (CODE_RE.test(firstToken)) break; // reached the course-code line
-            nameParts.push(line.text);
+            if (!seenCode && CODE_RE.test(firstToken)) {
+                seenCode = true;
+                const roomMatch = line.text.match(/Rm\s*:\s*(\S+)/i);
+                if (roomMatch) room = roomMatch[1];
+                continue; // the code/room line itself isn't part of the name or teacher
+            }
+            if (seenCode) {
+                teacherParts.push(line.text);
+            } else {
+                nameParts.push(line.text);
+            }
         }
+
         const name = nameParts.join(" ").trim();
-        if (name) classSchedule[col][band] = name;
+        if (name) {
+            classSchedule[col][band] = {
+                name,
+                teacher: teacherParts.join(" ").trim(),
+                room,
+            };
+        }
     }
 
-    return { classSchedule, dayCount, periodCount };
+    return { classSchedule, blockTimes, dayCount, periodCount };
 }
 
 export { parseGridItems, CODE_RE, TIME_ROW_RE };

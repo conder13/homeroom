@@ -12,21 +12,22 @@
 
    <link rel="icon" type="image/x-icon" href="hrlogo7.png">
    <title>Dashboard - Homeroom</title>
-
+   <div class="navbar">
+      <img src="hrlogo7.png" id="navlogo"></img>
+      <a id="navlink_clicked" href="index.html">
+         <h2 id="navlink_clicked">Home</h2>
+      </a>
+      <a id="navlink" href="schedule.html">
+         <h2 id="navlink">Schedule</h2>
+      </a>
+   </div>
+</head>
 
 <body>
-<div class="navbar">
-   <img src="hrlogo7.png" id="navlogo"></img>
-   <a id="navlink_clicked" href="index.html">
-      <h2 id="navlink_clicked">Home</h2>
-   </a>
-   <a id="navlink" href="schedule.html">
-      <h2 id="navlink">Schedule</h2>
-   </a>
-</div>
+
 
 <div class="banner">
-   <h1 id="welcome">Welcome Student</h1>
+   <h1 id="welcome">Welcome <script>document.write(localStorage.getItem("username") ?? "Student")</script></h1>
 </div>
 
 <div id="dashboardControls">
@@ -38,6 +39,7 @@
      localStorage ("moduleLayout") and the module registry
      (modules/registry.js). See those files to add a new module
      type or change what ships by default. -->
+
 <div class="module-grid" id="module-grid"></div>
 
 </body>
