@@ -29,30 +29,45 @@
 </div>
 
 <div id="app">
-   <div id="classPanel">
-      <h2>Classes</h2>
-      <div id="classInput">
-         <input type="text" id="newClassName" minlength="1" maxlength="12" placeholder="Add class..." />
-         <button id="addClassBtn" type="button">+</button>
+   <div id="primaryActions">
+      <div class="primaryCard" id="uploadPanel">
+         <label for="scheduleUpload" id="uploadLabel">Upload schedule PDF</label>
+         <input type="file" id="scheduleUpload" accept="application/pdf" />
+         <span id="uploadStatus"></span>
       </div>
-      <div id="classListContainer">
-         <div id="classList"></div>
+
+      <div class="primaryCard" id="exportCard">
+         <p id="exportCardHint">Turn your schedule into an image or PDF you can save or share.</p>
+         <div id="exportBtnSlot"></div>
       </div>
    </div>
 
-   <p id="dragHint">Drag a class onto a day below. Drag a placed class onto another slot to copy it there too.</p>
+   <details id="manualEditing">
+      <summary>
+         Manual editing
+         <span class="manualHint">In case import above does not work properly.</span>
+      </summary>
+      <div id="manualContent">
+         <div id="classPanel">
+            <h2>Classes</h2>
+            <div id="classInput">
+               <input type="text" id="newClassName" minlength="1" maxlength="12" placeholder="Add class..." />
+               <button id="addClassBtn" type="button">+</button>
+            </div>
+            <div id="classListContainer">
+               <div id="classList"></div>
+            </div>
+         </div>
 
-   <div id="uploadPanel">
-      <label for="scheduleUpload" id="uploadLabel">Upload schedule PDF</label>
-      <input type="file" id="scheduleUpload" accept="application/pdf" />
-      <span id="uploadStatus"></span>
-   </div>
+         <p id="dragHint">Drag a class onto a day below. Drag a placed class onto another slot to copy it there too.</p>
 
-   <div id="scheduleHeader">
-      <h2>Your Schedule</h2>
-      <button id="clearSchedule" type="button">Clear Schedule</button>
-   </div>
-   <div id="scheduleContainer"></div>
+         <div id="scheduleHeader">
+            <h2>Your Schedule</h2>
+            <button id="clearSchedule" type="button">Clear Schedule</button>
+         </div>
+         <div id="scheduleContainer"></div>
+      </div>
+   </details>
 </div>
 
 </body>

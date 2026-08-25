@@ -71,12 +71,6 @@ function buildExportCard() {
         return card;
     }
 
-    // CSS Grid, not a <table> -- html2canvas doesn't reliably render
-    // native table layout (display: table-row/table-cell just gets
-    // flattened), but Grid gives the exact same guarantee we want:
-    // every cell in a row shares that row's height, every day column
-    // shares the same width, because it's all one grid, not per-day
-    // containers sizing themselves independently.
     const dayCount = classSchedule.length;
     const blockCount = Math.max(...classSchedule.map((day) => day.length), 0);
 
@@ -157,12 +151,41 @@ async function renderToCanvas(card) {
     });
 }
 
+// Mobile browsers (iOS Safari especially) largely ignore the <a download>
+// trick -- it just opens the image/PDF in a new tab instead of saving it.
+// The reliable cross-platform way to hand a generated file to the user is
+// the Web Share API's file support: it opens the native share sheet, and
+// "Save to Photos" / "Save to Files" is one of the options there. Where
+// that's not available (most desktop browsers), fall back to the classic
+// anchor-click download, which works fine there.
+async function shareOrDownloadFile(blob, filename, mimeType) {
+    const file = new File([blob], filename, { type: mimeType });
+
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        try {
+            await navigator.share({ files: [file], title: filename });
+            return "shared";
+        } catch (err) {
+            if (err.name === "AbortError") return "shared"; // user closed the share sheet -- not a failure
+            // Some browsers report canShare: true but still fail -- fall through to a download.
+        }
+    }
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 10000);
+    return "downloaded";
+}
+
 async function downloadPng(card) {
     const canvas = await renderToCanvas(card);
-    const link = document.createElement("a");
-    link.download = "my-schedule.png";
-    link.href = canvas.toDataURL("image/png");
-    link.click();
+    const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
+    return shareOrDownloadFile(blob, "my-schedule.png", "image/png");
 }
 
 async function downloadPdf(card) {
@@ -174,7 +197,8 @@ async function downloadPdf(card) {
         format: [canvas.width, canvas.height],
     });
     pdf.addImage(canvas.toDataURL("image/png"), "PNG", 0, 0, canvas.width, canvas.height);
-    pdf.save("my-schedule.pdf");
+    const blob = pdf.output("blob");
+    return shareOrDownloadFile(blob, "my-schedule.pdf", "application/pdf");
 }
 
 export function openScheduleExport() {
@@ -215,8 +239,10 @@ export function openScheduleExport() {
         pdfBtn.disabled = true;
         try {
             await ensureExportLibs();
-            await fn(card);
-            status.textContent = `${label} saved to your downloads.`;
+            const result = await fn(card);
+            status.textContent = result === "shared"
+                ? `${label} shared -- check where you saved it.`
+                : `${label} saved to your downloads.`;
         } catch (err) {
             console.error("Schedule export failed:", err);
             status.textContent = "Couldn't export -- try again.";

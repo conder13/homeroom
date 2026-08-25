@@ -38,6 +38,21 @@ import { openScheduleExport } from "./scheduleExport.js";
 const DEFAULT_DAYS = 6;
 const DEFAULT_BLOCKS = 7;
 
+// Shared by every Sortable instance below -- scrolls the page (or a
+// scrollable ancestor) while dragging near an edge: down/up on a tall
+// single-column phone layout, left/right on a wide desktop week grid.
+// The defaults are tuned to be pretty easy to trigger by accident, so
+// this widens the trigger zone and speeds it up; forceAutoScrollFallback
+// keeps it working the same way for both native desktop drag-and-drop
+// and the touch fallback SortableJS uses on phones/Chromebooks.
+const AUTOSCROLL_OPTS = {
+   scroll: true,
+   scrollSensitivity: 90,
+   scrollSpeed: 18,
+   bubbleScroll: true,
+   forceAutoScrollFallback: true,
+};
+
 // Cycled through automatically as classes are added; any class's color
 // can be overridden with the picker in its card.
 const CLASS_COLOR_PALETTE = [
@@ -190,20 +205,6 @@ persistSchedule();
 // DOM refs
 // ---------------------------------------------------------------------
 
-// The class list becomes a sticky shelf under the navbar on small
-// screens (see style.css) -- it needs to know the navbar's actual
-// rendered height (which changes with font-size/padding at the mobile
-// breakpoint) rather than a guessed constant, so it sits flush under it
-// instead of overlapping or leaving a gap.
-function setNavbarHeightVar() {
-   const navbar = document.querySelector(".navbar");
-   if (navbar) {
-      document.documentElement.style.setProperty("--navbar-h", `${navbar.offsetHeight}px`);
-   }
-}
-setNavbarHeightVar();
-window.addEventListener("resize", setNavbarHeightVar);
-
 const classList = document.getElementById("classList");
 const newClassName = document.getElementById("newClassName");
 const addClassBtn = document.getElementById("addClassBtn");
@@ -221,9 +222,9 @@ scheduleContainer.parentNode.insertBefore(blockTimesPanel, scheduleContainer);
 const exportBtn = document.createElement("button");
 exportBtn.type = "button";
 exportBtn.id = "exportScheduleBtn";
-exportBtn.textContent = "Export Schedule";
+exportBtn.textContent = "Export Your Schedule";
 exportBtn.addEventListener("click", () => openScheduleExport());
-clearBtn.insertAdjacentElement("afterend", exportBtn);
+document.getElementById("exportBtnSlot").appendChild(exportBtn);
 
 // ---------------------------------------------------------------------
 // Sidebar: class cards (name, color, teacher, room, remove) -- this is
@@ -282,24 +283,7 @@ function createClassCard(cls, onRemove) {
       onRemove();
    });
 
-   // On small screens each card starts collapsed to a compact chip
-   // (see .classMetaRow / .classCard--expanded in style.css) so the
-   // sticky class shelf stays short -- this reveals/hides the
-   // teacher/room fields. It's a no-op above the mobile breakpoint,
-   // where the toggle itself is hidden and the fields are always shown.
-   const editToggleBtn = document.createElement("button");
-   editToggleBtn.type = "button";
-   editToggleBtn.className = "classEditToggle";
-   editToggleBtn.textContent = "\u270E"; // pencil
-   editToggleBtn.title = "Show teacher/room";
-   editToggleBtn.setAttribute("aria-label", "Show teacher/room");
-   editToggleBtn.addEventListener("pointerdown", (e) => e.stopPropagation());
-   editToggleBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      card.classList.toggle("classCard--expanded");
-   });
-
-   top.append(colorInput, nameInput, editToggleBtn, removeBtn);
+   top.append(colorInput, nameInput, removeBtn);
    card.appendChild(top);
 
    const metaRow = document.createElement("div");
@@ -406,16 +390,7 @@ new Sortable(classList, {
    sort: false,
    filter: ".removeBtn",
    preventOnFilter: true,
-   // touch-action on .classCard now allows panning (see style.css) so
-   // the sidebar can be swipe-scrolled on mobile -- these two options
-   // are what keep that from turning every swipe into an accidental
-   // drag: touch needs a brief press-and-hold before a drag starts, and
-   // any real movement during that hold cancels it in favor of the
-   // browser's native scroll. Desktop mouse dragging is untouched
-   // (delayOnTouchOnly means the delay only applies to touch input).
-   delay: 150,
-   delayOnTouchOnly: true,
-   touchStartThreshold: 5,
+   ...AUTOSCROLL_OPTS,
 });
 
 // ---------------------------------------------------------------------
@@ -520,6 +495,7 @@ function createDayColumn(dayIndex, blockCount) {
          sort: false,
          filter: ".removeBtn",
          preventOnFilter: true,
+         ...AUTOSCROLL_OPTS,
          onAdd: (evt) => {
             // Enforce one class per slot: whatever else is in here, drop it.
             Array.from(block.children).forEach((child) => {
